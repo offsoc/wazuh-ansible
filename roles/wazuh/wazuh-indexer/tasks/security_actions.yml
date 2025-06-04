@@ -79,16 +79,10 @@
 
   - name: Initialize the Opensearch security index in Wazuh indexer
     command: >
-      sudo -u wazuh-indexer OPENSEARCH_PATH_CONF={{ indexer_conf_path }}
-      JAVA_HOME=/usr/share/wazuh-indexer/jdk
-      {{ indexer_sec_plugin_tools_path }}/securityadmin.sh
-      -cd {{ indexer_sec_plugin_conf_path }}/
-      -icl -p 9200 -cd {{ indexer_sec_plugin_conf_path }}/
-      -nhnv
-      -cacert {{ indexer_conf_path }}/certs/root-ca.pem
-      -cert {{ indexer_conf_path }}/certs/admin.pem
-      -key {{ indexer_conf_path }}/certs/admin-key.pem
-      -h {{ target_address }}
+      sudo /usr/share/wazuh-indexer/bin/indexer-security-init.sh
+      --host {{ target_address }}
+      --port {{ indexer_http_port }}
+      --options "-cd {{ indexer_sec_plugin_conf_path }}/ -icl -nhnv -cacert {{ indexer_conf_path }}/certs/root-ca.pem -cert {{ indexer_conf_path }}/certs/admin.pem -key {{ indexer_conf_path }}/certs/admin-key.pem"
     retries: 2
     delay: 5
     register: result
